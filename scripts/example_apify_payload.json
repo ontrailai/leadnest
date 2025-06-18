@@ -1,0 +1,28 @@
+{
+  "actorId": "apify/facebook-groups-scraper",
+  "input": {
+    "startUrls": [
+      {
+        "url": "https://www.facebook.com/groups/austinpropertyowners"
+      },
+      {
+        "url": "https://www.facebook.com/groups/denverrealestateinvestors"
+      }
+    ],
+    "searchKeywords": [
+      "property manager",
+      "need help managing",
+      "burned out",
+      "tired of guests",
+      "looking for PM"
+    ],
+    "maxPostsPerGroup": 50,
+    "scrollTimeout": 40,
+    "cookieString": "c_user=YOUR_COOKIE_HERE; xs=YOUR_XS_COOKIE_HERE",
+    "proxyConfiguration": {
+      "useApifyProxy": true,
+      "apifyProxyGroups": ["RESIDENTIAL"]
+    },
+    "extendOutputFunction": "async ({ data, item, page, request }) => {\n  return {\n    ...item,\n    groupName: await page.$eval('h1', el => el.textContent).catch(() => 'Unknown Group'),\n    authorName: data.authorName || 'Unknown',\n    reactions: data.reactionsCount || 0,\n    comments: data.commentsCount || 0,\n    shares: data.sharesCount || 0\n  };\n}"
+  }
+}

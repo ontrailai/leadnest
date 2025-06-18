@@ -1,0 +1,4 @@
+{
+  "cookie": "PASTE_YOUR_FACEBOOK_COOKIE_HERE",
+  "_instructions": "To get your Facebook cookie: 1) Log into Facebook, 2) Open Developer Tools (F12), 3) Go to Application/Storage > Cookies, 4) Copy the 'c_user' and 'xs' cookie values, 5) Format as: 'c_user=VALUE; xs=VALUE'"
+}
