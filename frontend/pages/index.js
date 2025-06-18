@@ -9,8 +9,7 @@ import axios from 'axios';
 import { Sparkles, LogOut, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/utils/supabaseClient';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+import { mockLeads } from '@/data/mockLeads';
 
 export default function Home() {
   const [leads, setLeads] = useState([]);
@@ -58,6 +57,22 @@ export default function Home() {
     setHasSearched(true);
     
     try {
+      // Check if we're in test mode
+      if (process.env.NEXT_PUBLIC_TEST_MODE === 'true') {
+        // Use mock data instead of API calls
+        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate loading
+        
+        const cityLeads = mockLeads[city] || [];
+        setLeads(cityLeads);
+        setStats({
+          totalLeads: cityLeads.length,
+          successfulEnrichments: cityLeads.length,
+          testMode: true
+        });
+        
+        return;
+      }
+
       // Include auth token in requests if available
       const headers = {};
       
@@ -72,6 +87,7 @@ export default function Home() {
       }
 
       // Step 1: Scrape Facebook posts
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
       const scrapeResponse = await axios.post(`${API_URL}/api/scrape`, {
         city,
         searchPhrases
